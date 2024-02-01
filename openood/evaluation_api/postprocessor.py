@@ -9,9 +9,11 @@ from openood.postprocessors import (
     MaxLogitPostprocessor, MCDPostprocessor, MDSPostprocessor, MDSEnsemblePostprocessor,
     MOSPostprocessor, ODINPostprocessor, OpenGanPostprocessor, OpenMax, PatchcorePostprocessor,
     Rd4adPostprocessor, ReactPostprocessor, ResidualPostprocessor, ScalePostprocessor,
-    SSDPostprocessor, TemperatureScalingPostprocessor, VIMPostprocessor, RotPredPostprocessor, 
-    RankFeatPostprocessor, RMDSPostprocessor, SHEPostprocessor, CIDERPostprocessor, NPOSPostprocessor, 
-    GENPostprocessor, NNGuidePostprocessor, RelationPostprocessor)
+    SSDPostprocessor, TemperatureScalingPostprocessor, VIMPostprocessor, RotPredPostprocessor,
+    RankFeatPostprocessor, RMDSPostprocessor, SHEPostprocessor, CIDERPostprocessor,
+    NPOSPostprocessor,
+    GENPostprocessor, NNGuidePostprocessor, RelationPostprocessor, SigmaMeanPostprocessor,
+    SigmaStdPostprocessor)
 from openood.utils.config import Config, merge_configs
 
 postprocessors = {
@@ -56,7 +58,9 @@ postprocessors = {
     'rankfeat': RankFeatPostprocessor,
     'gen': GENPostprocessor,
     'nnguide': NNGuidePostprocessor,
-    'relation': RelationPostprocessor
+    'relation': RelationPostprocessor,
+    'sigmamean': SigmaMeanPostprocessor,
+    'sigmastd': SigmaStdPostprocessor,
 }
 
 link_prefix = 'https://raw.githubusercontent.com/Jingkang50/OpenOOD/main/configs/postprocessors/'
