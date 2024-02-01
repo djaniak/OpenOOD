@@ -63,7 +63,7 @@ postprocessors = {
     'sigmastd': SigmaStdPostprocessor,
 }
 
-link_prefix = 'https://raw.githubusercontent.com/Jingkang50/OpenOOD/main/configs/postprocessors/'
+link_prefix = 'https://raw.githubusercontent.com/djaniak/OpenOOD/main/configs/postprocessors/'
 
 
 def get_postprocessor(config_root: str, postprocessor_name: str, id_data_name: str):
