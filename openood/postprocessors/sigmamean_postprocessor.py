@@ -1,0 +1,19 @@
+from typing import Any
+
+import torch
+import torch.nn as nn
+from .base_postprocessor import BasePostprocessor
+
+
+class SigmaMeanPostprocessor(BasePostprocessor):
+    def __init__(self, config):
+        super().__init__(config)
+        self.args = self.config.postprocessor.postprocessor_args
+
+    @torch.no_grad()
+    def postprocess(self, net: nn.Module, data: Any):
+        logits, dist = net(data, return_dist=True)
+        _, pred = torch.max(logits, dim=1)
+        (_, sigma) = dist
+        conf = sigma.mean(dim=1)
+        return pred, conf

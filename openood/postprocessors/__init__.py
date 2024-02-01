@@ -31,6 +31,8 @@ from .react_postprocessor import ReactPostprocessor
 from .rmds_postprocessor import RMDSPostprocessor
 from .residual_postprocessor import ResidualPostprocessor
 from .scale_postprocessor import ScalePostprocessor
+from .sigmamean_postprocessor import SigmaMeanPostprocessor
+from .sigmastd_postprocessor import SigmaStdPostprocessor
 from .ssd_postprocessor import SSDPostprocessor
 from .she_postprocessor import SHEPostprocessor
 from .temp_scaling_postprocessor import TemperatureScalingPostprocessor
