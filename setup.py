@@ -20,6 +20,9 @@ setuptools.setup(
         'opencv-python>=4.4.0.46', 'imgaug>=0.4.0', 'pandas', 'diffdist>=0.1',
         'Cython>=0.29.30', 'faiss-cpu>=1.7.2', 'gdown>=4.7.1', 'libmr>=0.1.9'
     ],
+    extras_require={
+        "gpu": ['faiss-gpu>=1.7.2'],
+    },
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: Apache Software License',
