@@ -174,8 +174,11 @@ class Evaluator:
         all_labels = []
         with torch.no_grad():
             for batch in tqdm(data_loader, desc=msg, disable=not progress):
-                data = batch['data'].cuda()
-                logits = self.net(data)
+                if isinstance(batch['data'], list):
+                    _, _, data = batch["data"]
+                else:
+                    data = batch["data"]
+                logits = self.net(data.cuda())
                 preds = logits.argmax(1)
                 all_preds.append(preds.cpu())
                 all_labels.append(batch['label'])
