@@ -103,7 +103,7 @@ postprocessors = {
     "umds": UnsupervisedMDSPostprocessor,
     "pmds": ProjectedMDSPostprocessor,
     "pumds": ProjectedUnsupervisedMDSPostprocessor,
-    "logprior": PriorLogProbPostprocessor,
+    "logpprior": PriorLogProbPostprocessor,
     "logpmodel": ModelLogProbPostprocessor,
     "kldivprior": PriorKlDivPostprocessor,
 }
