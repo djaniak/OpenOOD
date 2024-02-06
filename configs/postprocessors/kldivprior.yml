@@ -1,0 +1,4 @@
+postprocessor:
+  name: kldivprior
+  APS_mode: False
+  use_augumented: True

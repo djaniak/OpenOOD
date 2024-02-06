@@ -2,6 +2,7 @@ from typing import Any
 
 import torch
 import torch.nn as nn
+
 from .base_postprocessor import BasePostprocessor
 
 
@@ -14,6 +15,7 @@ class SigmaMeanPostprocessor(BasePostprocessor):
     def postprocess(self, net: nn.Module, data: Any):
         logits, dist = net(data, return_dist=True)
         _, pred = torch.max(logits, dim=1)
-        (_, sigma) = dist
+        (_, log_var) = dist
+        sigma = torch.exp(0.5 * log_var)
         conf = sigma.mean(dim=1)
         return pred, conf

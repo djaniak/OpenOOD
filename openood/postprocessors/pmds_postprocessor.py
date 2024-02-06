@@ -11,7 +11,7 @@ from .base_postprocessor import BasePostprocessor
 from .info import num_classes_dict
 
 
-class MDSPostprocessor(BasePostprocessor):
+class ProjectedMDSPostprocessor(BasePostprocessor):
     def __init__(self, config):
         self.config = config
         self.num_classes = num_classes_dict[self.config.dataset.name]
@@ -29,7 +29,7 @@ class MDSPostprocessor(BasePostprocessor):
                     id_loader_dict["train"], desc="Setup: ", position=0, leave=True
                 ):
                     data, labels = batch["data"].cuda(), batch["label"]
-                    logits, features = net(data, return_feature=True)
+                    logits, features = net(data, return_embeddings=True)
                     all_feats.append(features.cpu())
                     all_labels.append(deepcopy(labels))
                     all_preds.append(logits.argmax(1).cpu())

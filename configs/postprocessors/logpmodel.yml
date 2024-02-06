@@ -1,0 +1,4 @@
+postprocessor:
+  name: logpmodel
+  APS_mode: False
+  use_augumented: True

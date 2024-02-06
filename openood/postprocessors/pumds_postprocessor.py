@@ -1,6 +1,7 @@
 from copy import deepcopy
 from typing import Any
 
+import faiss
 import numpy as np
 import sklearn.covariance
 import torch
@@ -11,7 +12,7 @@ from .base_postprocessor import BasePostprocessor
 from .info import num_classes_dict
 
 
-class MDSPostprocessor(BasePostprocessor):
+class ProjectedUnsupervisedMDSPostprocessor(BasePostprocessor):
     def __init__(self, config):
         self.config = config
         self.num_classes = num_classes_dict[self.config.dataset.name]
@@ -29,7 +30,7 @@ class MDSPostprocessor(BasePostprocessor):
                     id_loader_dict["train"], desc="Setup: ", position=0, leave=True
                 ):
                     data, labels = batch["data"].cuda(), batch["label"]
-                    logits, features = net(data, return_feature=True)
+                    logits, features = net(data, return_embeddings=True)
                     all_feats.append(features.cpu())
                     all_labels.append(deepcopy(labels))
                     all_preds.append(logits.argmax(1).cpu())
@@ -41,11 +42,14 @@ class MDSPostprocessor(BasePostprocessor):
             train_acc = all_preds.eq(all_labels).float().mean()
             print(f" Train acc: {train_acc:.2%}")
 
+            # compute clusters
+            all_clusters = self.compute_clusters(all_feats)
+
             # compute class-conditional statistics
             self.class_mean = []
             centered_data = []
             for c in range(self.num_classes):
-                class_samples = all_feats[all_labels.eq(c)].data
+                class_samples = all_feats[all_clusters.eq(c)].data
                 self.class_mean.append(class_samples.mean(0))
                 centered_data.append(class_samples - self.class_mean[c].view(1, -1))
 
@@ -75,3 +79,11 @@ class MDSPostprocessor(BasePostprocessor):
 
         conf = torch.max(class_scores, dim=1)[0]
         return pred, conf
+
+    def compute_clusters(self, features: torch.Tensor):
+        kmeans = faiss.Kmeans(
+            features.shape[1], self.num_clusters, niter=100, verbose=False, gpu=False
+        )
+        kmeans.train(np.random.permutation(features.numpy()))
+        _, ypred = kmeans.assign(features.numpy())
+        return torch.tensor(ypred)
