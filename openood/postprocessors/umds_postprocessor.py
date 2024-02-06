@@ -82,7 +82,7 @@ class UnsupervisedMDSPostprocessor(BasePostprocessor):
 
     def compute_clusters(self, features: torch.Tensor):
         kmeans = faiss.Kmeans(
-            features.shape[1], self.num_clusters, niter=100, verbose=False, gpu=False
+            features.shape[1], self.num_classes, niter=100, verbose=False, gpu=False
         )
         kmeans.train(np.random.permutation(features.numpy()))
         _, ypred = kmeans.assign(features.numpy())
