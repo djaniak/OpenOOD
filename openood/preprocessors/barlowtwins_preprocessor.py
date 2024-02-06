@@ -14,7 +14,7 @@ from openood.utils.config import Config
 
 class BarlowTwinsPreprocessor(BasePreprocessor):
     def __init__(self, config: Config):
-#         super().__init__(config)
+        # super().__init__(config)
         self.image_size = config.dataset.img_size
         self.interpolation = T.InterpolationMode.BILINEAR
         normalization_type = config.dataset.normalization_type
