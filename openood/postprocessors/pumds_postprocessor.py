@@ -22,7 +22,7 @@ class ProjectedUnsupervisedMDSPostprocessor(BasePostprocessor):
         if not self.setup_flag:
             # estimate mean and variance from training set
             print("\n Estimating mean and variance from training set...")
-            all_feats = []
+            all_embeddings = []
             all_labels = []
             all_preds = []
             with torch.no_grad():
@@ -30,12 +30,12 @@ class ProjectedUnsupervisedMDSPostprocessor(BasePostprocessor):
                     id_loader_dict["train"], desc="Setup: ", position=0, leave=True
                 ):
                     data, labels = batch["data"].cuda(), batch["label"]
-                    logits, features = net(data, return_embeddings=True)
-                    all_feats.append(features.cpu())
+                    logits, embeddings = net(data, return_embeddings=True)
+                    all_embeddings.append(embeddings.cpu())
                     all_labels.append(deepcopy(labels))
                     all_preds.append(logits.argmax(1).cpu())
 
-            all_feats = torch.cat(all_feats)
+            all_embeddings = torch.cat(all_embeddings)
             all_labels = torch.cat(all_labels)
             all_preds = torch.cat(all_preds)
             # sanity check on train acc
@@ -43,13 +43,13 @@ class ProjectedUnsupervisedMDSPostprocessor(BasePostprocessor):
             print(f" Train acc: {train_acc:.2%}")
 
             # compute clusters
-            all_clusters = self.compute_clusters(all_feats)
+            all_clusters = self.compute_clusters(all_embeddings)
 
             # compute class-conditional statistics
             self.class_mean = []
             centered_data = []
             for c in range(self.num_classes):
-                class_samples = all_feats[all_clusters.eq(c)].data
+                class_samples = all_embeddings[all_clusters.eq(c)].data
                 self.class_mean.append(class_samples.mean(0))
                 centered_data.append(class_samples - self.class_mean[c].view(1, -1))
 
@@ -67,12 +67,12 @@ class ProjectedUnsupervisedMDSPostprocessor(BasePostprocessor):
 
     @torch.no_grad()
     def postprocess(self, net: nn.Module, data: Any):
-        logits, features = net(data, return_feature=True)
+        logits, embeddings = net(data, return_embeddings=True)
         pred = logits.argmax(1)
 
         class_scores = torch.zeros((logits.shape[0], self.num_classes))
         for c in range(self.num_classes):
-            tensor = features.cpu() - self.class_mean[c].view(1, -1)
+            tensor = embeddings.cpu() - self.class_mean[c].view(1, -1)
             class_scores[:, c] = -torch.matmul(
                 torch.matmul(tensor, self.precision), tensor.t()
             ).diag()
