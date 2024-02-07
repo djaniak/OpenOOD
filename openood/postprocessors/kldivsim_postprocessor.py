@@ -6,13 +6,14 @@ import torch.nn as nn
 from torch.distributions import Independent, Normal, kl_divergence
 from tqdm import tqdm
 
-from .base_postprocessor import BasePostprocessor
+from openood.postprocessors.base_postprocessor import BasePostprocessor
 
 
 class KlDivSimPostprocessor(BasePostprocessor):
     def __init__(self, config):
         self.config = config
         self.setup_flag = False
+        self.APS_mode = False
 
     def setup(self, net: nn.Module, id_loader_dict, ood_loader_dict):
         if not self.setup_flag:
@@ -53,7 +54,8 @@ class KlDivSimPostprocessor(BasePostprocessor):
 
     @torch.no_grad()
     def postprocess(self, net: nn.Module, data: Any):
-        logits, (mus, logvars) = net(data, return_dist=True)
+        x1, x2, x3 = data
+        logits, (mus, logvars) = net(x3, return_dist=True)
         pred = logits.argmax(1)
 
         conf = []
