@@ -47,12 +47,14 @@ from openood.postprocessors import (
     VIMPostprocessor,
 )
 from openood.postprocessors.kldivprior_postprocessor import PriorKlDivPostprocessor
+from openood.postprocessors.kldivsim_postprocessor import KlDivSimPostprocessor
 from openood.postprocessors.logpmodel_postprocessor import ModelLogProbPostprocessor
 from openood.postprocessors.logpprior_postprocessor import PriorLogProbPostprocessor
 from openood.postprocessors.pmds_postprocessor import ProjectedMDSPostprocessor
 from openood.postprocessors.pumds_postprocessor import (
     ProjectedUnsupervisedMDSPostprocessor,
 )
+from openood.postprocessors.rkldivsim_postprocessor import RKlDivSimPostprocessor
 from openood.postprocessors.umds_postprocessor import UnsupervisedMDSPostprocessor
 from openood.utils.config import Config, merge_configs
 
@@ -106,6 +108,8 @@ postprocessors = {
     "logpprior": PriorLogProbPostprocessor,
     "logpmodel": ModelLogProbPostprocessor,
     "kldivprior": PriorKlDivPostprocessor,
+    "kldivsim": KlDivSimPostprocessor,
+    "rkldivsim": RKlDivSimPostprocessor,
 }
 
 link_prefix = (
