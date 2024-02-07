@@ -59,7 +59,7 @@ class KlDivSimPostprocessor(BasePostprocessor):
         pred = logits.argmax(1)
 
         conf = []
-        for mu, logvar in tqdm(zip(mus, logvars)):
+        for mu, logvar in zip(mus, logvars):
             q = Independent(Normal(mu, logvar), 1)
             min_kldiv = torch.min(kl_divergence(self.train_q, q))
             conf.append(min_kldiv)
