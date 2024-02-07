@@ -26,12 +26,12 @@ class KlDivSimPostprocessor(BasePostprocessor):
                         id_loader_dict["train"], desc="Setup: ", position=0, leave=True
                 ):
                     if isinstance(batch["data"], list):
-                        x1, x2, x3 = batch["data"]
-                        data = (x1.cuda(), x2.cuda(), x3.cuda())
+                        _, _, x = batch["data"]
+                        # data = (x1.cuda(), x2.cuda(), x3.cuda())
                     else:
-                        data = batch["data"].cuda()
+                        x = batch["data"]
                     labels = batch["label"]
-                    logits, (mus, logvars) = net(data, return_dist=True)
+                    logits, (mus, logvars) = net(x.cuda(), return_dist=True)
                     all_mus.append(mus)
                     all_logvars.append(logvars)
                     all_labels.append(deepcopy(labels))

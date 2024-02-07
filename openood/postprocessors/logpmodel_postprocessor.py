@@ -18,7 +18,6 @@ class ModelLogProbPostprocessor(BasePostprocessor):
         self.use_augumented = config.postprocessor.use_augumented
         self.APS_mode = False
 
-
     @torch.no_grad()
     def postprocess(self, net: nn.Module, data: Any):
         x1, x2, x3 = data

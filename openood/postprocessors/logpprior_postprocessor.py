@@ -17,16 +17,23 @@ class PriorLogProbPostprocessor(BasePostprocessor):
         self.use_augumented = config.postprocessor.use_augumented
         self.APS_mode = False
 
-
     @torch.no_grad()
     def postprocess(self, net: nn.Module, data: Any):
         x1, x2, x3 = data
-        logits, z3 = net(x3, return_embeddings=True)
+        if net.stochastic_space == "H":
+            kwargs = {"return_feature": True}
+        elif net.stochastic_space == "Z":
+            kwargs = {"return_embeddings": True}
+        else:
+            raise ValueError(
+                "Cannot postprocess because there is no stochastic space in the model!"
+            )
+        logits, z3 = net(x3, **kwargs)
         _, pred = torch.max(logits, dim=1)
 
         if self.use_augumented:
-            _, z1 = net(x1, return_embeddings=True)
-            _, z2 = net(x2, return_embeddings=True)
+            _, z1 = net(x1, **kwargs)
+            _, z2 = net(x2, **kwargs)
             z1_logp = net.model.prior.log_prob(z1.unsqueeze(0)).sum(-1)
             z2_logp = net.model.prior.log_prob(z2.unsqueeze(0)).sum(-1)
             conf = z1_logp + z2_logp
