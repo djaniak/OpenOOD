@@ -61,7 +61,9 @@ class KlDivSimPostprocessor(BasePostprocessor):
         conf = []
         for mu, logvar in zip(mus, logvars):
             q = Independent(Normal(mu, logvar), 1)
-            min_kldiv = torch.min(kl_divergence(self.train_q, q))
+            kl_divs = kl_divergence(self.train_q, q)
+            kl_divs = torch.nan_to_num(kl_divs, nan=torch.inf)  # remove nans
+            min_kldiv = torch.min(kl_divs)
             conf.append(min_kldiv)
         conf = torch.hstack(conf).cpu()
 
