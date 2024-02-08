@@ -28,7 +28,6 @@ class KlDivSimPostprocessor(BasePostprocessor):
                 ):
                     if isinstance(batch["data"], list):
                         _, _, x = batch["data"]
-                        # data = (x1.cuda(), x2.cuda(), x3.cuda())
                     else:
                         x = batch["data"]
                     labels = batch["label"]
@@ -47,7 +46,7 @@ class KlDivSimPostprocessor(BasePostprocessor):
             train_acc = all_preds.eq(all_labels).float().mean()
             print(f" Train acc: {train_acc:.2%}")
 
-            self.train_q = Independent(Normal(all_mus, all_logvars), 1)
+            self.train_q = Independent(Normal(all_mus, torch.exp(0.5 * all_logvars)), 1)
             self.setup_flag = True
         else:
             pass
@@ -60,7 +59,7 @@ class KlDivSimPostprocessor(BasePostprocessor):
 
         conf = []
         for mu, logvar in zip(mus, logvars):
-            q = Independent(Normal(mu, logvar), 1)
+            q = Independent(Normal(mu, torch.exp(0.5 * logvar)), 1)
             kl_divs = kl_divergence(self.train_q, q)
             kl_divs = torch.nan_to_num(kl_divs, nan=torch.finfo(torch.float16).max)
             min_kldiv = torch.min(kl_divs)
