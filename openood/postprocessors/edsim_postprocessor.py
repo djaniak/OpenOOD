@@ -21,7 +21,6 @@ class EuclideanDistSimPostprocessor(BasePostprocessor):
             all_labels = []
             all_preds = []
 
-
             with torch.no_grad():
                 for batch in tqdm(
                         id_loader_dict["train"], desc="Setup: ", position=0, leave=True
@@ -51,8 +50,7 @@ class EuclideanDistSimPostprocessor(BasePostprocessor):
 
     @torch.no_grad()
     def postprocess(self, net: nn.Module, data: Any):
-        x1, x2, x3 = data
-        logits, feats = net(x3, return_feature=True)
+        logits, feats = net(data, return_feature=True)
         pred = logits.argmax(1)
 
         dist = torch.tensor(cdist(feats, self.train_feats))
