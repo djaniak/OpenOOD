@@ -53,7 +53,7 @@ class EuclideanDistSimPostprocessor(BasePostprocessor):
         logits, feats = net(data, return_feature=True)
         pred = logits.argmax(1)
 
-        dist = torch.tensor(cdist(feats, self.train_feats))
+        dist = torch.tensor(cdist(feats.cpu(), self.train_feats))
         conf = torch.min(dist, dim=1).values
 
         return pred, conf
