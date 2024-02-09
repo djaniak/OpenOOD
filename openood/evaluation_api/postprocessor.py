@@ -46,6 +46,7 @@ from openood.postprocessors import (
     TemperatureScalingPostprocessor,
     VIMPostprocessor,
 )
+from openood.postprocessors.edsim_postprocessor import EuclideanDistSimPostprocessor
 from openood.postprocessors.kldivprior_postprocessor import PriorKlDivPostprocessor
 from openood.postprocessors.kldivsim_postprocessor import KlDivSimPostprocessor
 from openood.postprocessors.logpmodel_postprocessor import ModelLogProbPostprocessor
@@ -110,6 +111,7 @@ postprocessors = {
     "kldivprior": PriorKlDivPostprocessor,
     "kldivsim": KlDivSimPostprocessor,
     "rkldivsim": RKlDivSimPostprocessor,
+    "edsim": EuclideanDistSimPostprocessor
 }
 
 link_prefix = (
