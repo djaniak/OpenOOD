@@ -9,7 +9,7 @@ from tqdm import tqdm
 from openood.postprocessors.base_postprocessor import BasePostprocessor
 
 
-class KlDivSimPostprocessor(BasePostprocessor):
+class RKlDivSimPostprocessor(BasePostprocessor):
     def __init__(self, config):
         self.config = config
         self.setup_flag = False
