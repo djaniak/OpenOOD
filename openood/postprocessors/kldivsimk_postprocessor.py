@@ -69,3 +69,9 @@ class KlDivSimKPostprocessor(BasePostprocessor):
         conf = torch.hstack(conf).cpu()
 
         return pred, conf
+
+    def set_hyperparam(self, hyperparam: list):
+        self.K = hyperparam[0]
+
+    def get_hyperparam(self):
+        return self.K
