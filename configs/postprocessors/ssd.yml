@@ -1,3 +1,0 @@
-postprocessor:
-  name: ssd
-  APS_mode: False

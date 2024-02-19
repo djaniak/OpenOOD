@@ -37,7 +37,6 @@ from .rmds_postprocessor import RMDSPostprocessor
 from .rotpred_postprocessor import RotPredPostprocessor
 from .rts_postprocessor import RTSPostprocessor
 from .she_postprocessor import SHEPostprocessor
-from .ssd_postprocessor import SSDPostprocessor
 from .temp_scaling_postprocessor import TemperatureScalingPostprocessor
 from .vim_postprocessor import VIMPostprocessor
 
@@ -76,7 +75,6 @@ def get_postprocessor(config: Config):
         "opengan": OpenGanPostprocessor,
         "knn": KNNPostprocessor,
         "dice": DICEPostprocessor,
-        "ssd": SSDPostprocessor,
         "she": SHEPostprocessor,
         "rd4ad": Rd4adPostprocessor,
         "rts": RTSPostprocessor,

@@ -39,7 +39,6 @@ from .scale_postprocessor import ScalePostprocessor
 from .she_postprocessor import SHEPostprocessor
 from .sigmamean_postprocessor import SigmaMeanPostprocessor
 from .sigmastd_postprocessor import SigmaStdPostprocessor
-from .ssd_postprocessor import SSDPostprocessor
 from .temp_scaling_postprocessor import TemperatureScalingPostprocessor
 from .utils import get_postprocessor
 from .vim_postprocessor import VIMPostprocessor

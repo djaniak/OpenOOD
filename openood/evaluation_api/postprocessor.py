@@ -42,13 +42,13 @@ from openood.postprocessors import (
     SHEPostprocessor,
     SigmaMeanPostprocessor,
     SigmaStdPostprocessor,
-    SSDPostprocessor,
     TemperatureScalingPostprocessor,
     VIMPostprocessor,
 )
 from openood.postprocessors.edsim_postprocessor import EuclideanDistSimPostprocessor
 from openood.postprocessors.kldivprior_postprocessor import PriorKlDivPostprocessor
 from openood.postprocessors.kldivsim_postprocessor import KlDivSimPostprocessor
+from openood.postprocessors.kldivsimk_postprocessor import KlDivSimKPostprocessor
 from openood.postprocessors.logpmodel_postprocessor import ModelLogProbPostprocessor
 from openood.postprocessors.logpprior_postprocessor import PriorLogProbPostprocessor
 from openood.postprocessors.pmds_postprocessor import ProjectedMDSPostprocessor
@@ -93,7 +93,6 @@ postprocessors = {
     "knn": KNNPostprocessor,
     "dice": DICEPostprocessor,
     "scale": ScalePostprocessor,
-    "ssd": SSDPostprocessor,
     "she": SHEPostprocessor,
     "rd4ad": Rd4adPostprocessor,
     "rotpred": RotPredPostprocessor,
@@ -111,6 +110,7 @@ postprocessors = {
     "kldivprior": PriorKlDivPostprocessor,
     "kldivsim": KlDivSimPostprocessor,
     "rkldivsim": RKlDivSimPostprocessor,
+    "kldivsimk": KlDivSimKPostprocessor,
     "edsim": EuclideanDistSimPostprocessor
 }
 

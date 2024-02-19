@@ -1,0 +1,7 @@
+postprocessor:
+  name: kldivsimk
+  APS_mode: True
+  postprocessor_args:
+    K: 50
+  postprocessor_sweep:
+    K_list: [10, 50, 200, 1000]
