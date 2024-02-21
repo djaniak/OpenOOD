@@ -46,6 +46,7 @@ from openood.postprocessors import (
     VIMPostprocessor,
 )
 from openood.postprocessors.edsim_postprocessor import EuclideanDistSimPostprocessor
+from openood.postprocessors.edsimk_postprocessor import EuclideanDistSimKPostprocessor
 from openood.postprocessors.kldivprior_postprocessor import PriorKlDivPostprocessor
 from openood.postprocessors.kldivsim_postprocessor import KlDivSimPostprocessor
 from openood.postprocessors.kldivsimk_postprocessor import KlDivSimKPostprocessor
@@ -111,7 +112,8 @@ postprocessors = {
     "kldivsim": KlDivSimPostprocessor,
     "rkldivsim": RKlDivSimPostprocessor,
     "kldivsimk": KlDivSimKPostprocessor,
-    "edsim": EuclideanDistSimPostprocessor
+    "edsim": EuclideanDistSimPostprocessor,
+    "edsimk": EuclideanDistSimKPostprocessor
 }
 
 link_prefix = (
