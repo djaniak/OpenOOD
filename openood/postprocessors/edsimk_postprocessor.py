@@ -57,7 +57,7 @@ class EuclideanDistSimKPostprocessor(BasePostprocessor):
 
         dist = torch.tensor(cdist(feats.cpu(), self.train_feats))
         sorted_dist = torch.sort(dist, dim=1)[0]
-        conf = sorted_dist[:, self.K]
+        conf = -sorted_dist[:, self.K]
 
         return pred, conf
 

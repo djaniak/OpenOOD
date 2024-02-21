@@ -4,4 +4,4 @@ postprocessor:
   postprocessor_args:
     K: 50
   postprocessor_sweep:
-    K_list: [10, 50, 200, 1000]
+    K_list: [1, 10, 50, 200, 1000]
