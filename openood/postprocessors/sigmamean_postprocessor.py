@@ -13,7 +13,8 @@ class SigmaMeanPostprocessor(BasePostprocessor):
 
     @torch.no_grad()
     def postprocess(self, net: nn.Module, data: Any):
-        logits, dist = net(data, return_dist=True)
+        x1, x2, x3 = data
+        logits, dist = net(x3, return_dist=True)
         _, pred = torch.max(logits, dim=1)
         (_, log_var) = dist
         sigma = torch.exp(0.5 * log_var)
