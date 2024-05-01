@@ -479,13 +479,13 @@ def get_id_ood_dataloader(id_name, data_root, preprocessor, id_preembedded=False
         assert pretrained_model is not None
 
         train_ds = _load_dataset(
-            data_dir=os.path.join(data_root, f"preembedded_imagenet/{pretrained_model}/train.pt"), split="train"
+            data_dir=os.path.join(data_root, f"images_largescale/preembedded_imagenet/{pretrained_model}/train.pt"), split="train"
         )
         val_ds = _load_dataset(
-            data_dir=os.path.join(data_root, f"preembedded_imagenet/{pretrained_model}/val.pt"), split="val"
+            data_dir=os.path.join(data_root, f"images_largescale/preembedded_imagenet/{pretrained_model}/val.pt"), split="val"
         )
         test_ds = _load_dataset(
-            data_dir=os.path.join(data_root, f"preembedded_imagenet/{pretrained_model}/test.pt"), split="test"
+            data_dir=os.path.join(data_root, f"images_largescale/preembedded_imagenet/{pretrained_model}/test.pt"), split="test"
         )
         if test_ds is None:
             assert val_ds is not None
