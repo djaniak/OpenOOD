@@ -1,13 +1,18 @@
 import os
+from pathlib import Path
+
 import gdown
 import zipfile
 
-from torch.utils.data import DataLoader
+import torch
+from torch.utils.data import DataLoader, TensorDataset, Dataset, Subset
 import torchvision as tvs
 if tvs.__version__ >= '0.13':
     tvs_new = True
 else:
     tvs_new = False
+
+from sklearn.model_selection import train_test_split
 
 from openood.datasets.imglist_dataset import ImglistDataset
 from openood.preprocessors import BasePreprocessor
@@ -411,7 +416,33 @@ def data_setup(data_root, id_data_name):
         download_dataset(dataset, data_root)
 
 
-def get_id_ood_dataloader(id_name, data_root, preprocessor, **loader_kwargs):
+class CustomTensorDataset(TensorDataset):
+    def __getitem__(self, index):
+        return dict(zip(tuple(("data", "label")), tuple(tensor[index] for tensor in self.tensors)))
+
+
+def _load_dataset(data_dir: str, split: str) -> TensorDataset | None:
+    split_path = Path(data_dir) / f"{split}.pt"
+    try:
+        data = torch.load(split_path)
+        data = CustomTensorDataset(*data.tensors)
+        return data
+    except FileNotFoundError:
+        return None
+
+
+def _split_dataset(
+    base_dataset: Dataset, test_frac: float, stratify: torch.Tensor | None = None
+) -> tuple[Subset, Subset]:
+    train_idx, test_idx = train_test_split(
+        torch.arange(len(base_dataset)),  # type: ignore[arg-type]
+        stratify=stratify,
+        test_size=test_frac,
+    )
+    return Subset(base_dataset, train_idx), Subset(base_dataset, test_idx)
+
+
+def get_id_ood_dataloader(id_name, data_root, preprocessor, id_preembedded=False, pretrained_model=None, **loader_kwargs):
     if 'imagenet' in id_name:
         if tvs_new:
             if isinstance(preprocessor,
@@ -444,18 +475,43 @@ def get_id_ood_dataloader(id_name, data_root, preprocessor, **loader_kwargs):
 
     # id
     sub_dataloader_dict = {}
-    for split in data_info['id'].keys():
-        dataset = ImglistDataset(
-            name='_'.join((id_name, split)),
-            imglist_pth=os.path.join(data_root,
-                                     data_info['id'][split]['imglist_path']),
-            data_dir=os.path.join(data_root,
-                                  data_info['id'][split]['data_dir']),
-            num_classes=data_info['num_classes'],
-            preprocessor=preprocessor,
-            data_aux_preprocessor=test_standard_preprocessor)
-        dataloader = DataLoader(dataset, **loader_kwargs)
-        sub_dataloader_dict[split] = dataloader
+    if id_name == "imagenet" and id_preembedded:
+        assert pretrained_model is not None
+        train_ds = _load_dataset(
+            data_dir=f"data/datasets/preembedded_imagenet/{pretrained_model}/train.pt", split="train")
+        val_ds = _load_dataset(
+            data_dir=f"data/datasets/preembedded_imagenet/{pretrained_model}/val.pt", split="val")
+        test_ds = _load_dataset(
+            data_dir=f"data/datasets/preembedded_imagenet/{pretrained_model}/test.pt", split="test")
+        if test_ds is None:
+            assert val_ds is not None
+            test_ds = val_ds
+            val_ds = None
+        if val_ds is None:
+            assert train_ds is not None
+            _, train_labels = train_ds.tensors
+            train_ds, val_ds = _split_dataset(
+                train_ds, 0.2, stratify=train_labels
+            )
+        assert train_ds is not None
+        assert val_ds is not None
+        assert test_ds is not None
+        sub_dataloader_dict["train"] = DataLoader(train_ds, **loader_kwargs)
+        sub_dataloader_dict["val"] = DataLoader(val_ds, **loader_kwargs)
+        sub_dataloader_dict["test"] = DataLoader(test_ds, **loader_kwargs)
+    else:
+        for split in data_info['id'].keys():
+            dataset = ImglistDataset(
+                name='_'.join((id_name, split)),
+                imglist_pth=os.path.join(data_root,
+                                         data_info['id'][split]['imglist_path']),
+                data_dir=os.path.join(data_root,
+                                      data_info['id'][split]['data_dir']),
+                num_classes=data_info['num_classes'],
+                preprocessor=preprocessor,
+                data_aux_preprocessor=test_standard_preprocessor)
+            dataloader = DataLoader(dataset, **loader_kwargs)
+            sub_dataloader_dict[split] = dataloader
     dataloader_dict['id'] = sub_dataloader_dict
 
     # csid

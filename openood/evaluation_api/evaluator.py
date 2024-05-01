@@ -1,4 +1,4 @@
-from typing import Callable, List, Type
+from typing import Callable, List, Type, Optional
 
 import os
 import numpy as np
@@ -31,6 +31,8 @@ class Evaluator:
         postprocessor: Type[BasePostprocessor] = None,
         batch_size: int = 200,
         shuffle: bool = False,
+        id_preembedded: bool = False,
+        pretrained_model: Optional[str] = None,
         num_workers: int = 4,
     ) -> None:
         """A unified, easy-to-use API for evaluating (most) discriminative OOD
@@ -72,6 +74,9 @@ class Evaluator:
             TypeError:
                 If the passed postprocessor does not inherit BasePostprocessor.
         """
+        self.id_preembedded = id_preembedded
+        self.pretrained_model = pretrained_model
+
         # check the arguments
         if postprocessor_name is None and postprocessor is None:
             raise ValueError('Please pass postprocessor_name or postprocessor')
@@ -106,8 +111,7 @@ class Evaluator:
             'shuffle': shuffle,
             'num_workers': num_workers
         }
-        dataloader_dict = get_id_ood_dataloader(id_name, data_root,
-                                                preprocessor, **loader_kwargs)
+        dataloader_dict = get_id_ood_dataloader(id_name, data_root, preprocessor, id_preembedded, pretrained_model, **loader_kwargs)
 
         # wrap base model to work with certain postprocessors
         if postprocessor_name == 'react':
