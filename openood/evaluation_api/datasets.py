@@ -442,7 +442,7 @@ def _split_dataset(
     return Subset(base_dataset, train_idx), Subset(base_dataset, test_idx)
 
 
-def get_id_ood_dataloader(id_name, data_root, preprocessor, id_preembedded=False, pretrained_model=None, **loader_kwargs):
+def get_id_ood_dataloader(id_name, data_root, preprocessor, id_preembedded_dir=None, **loader_kwargs):
     if 'imagenet' in id_name:
         if tvs_new:
             if isinstance(preprocessor,
@@ -475,17 +475,15 @@ def get_id_ood_dataloader(id_name, data_root, preprocessor, id_preembedded=False
 
     # id
     sub_dataloader_dict = {}
-    if id_name == "imagenet" and id_preembedded:
-        assert pretrained_model is not None
-
+    if id_name == "imagenet" and id_preembedded_dir:
         train_ds = _load_dataset(
-            data_dir=os.path.join(data_root, f"images_largescale/preembedded_imagenet/{pretrained_model}"), split="train"
+            data_dir=os.path.join(data_root, id_preembedded_dir), split="train"
         )
         val_ds = _load_dataset(
-            data_dir=os.path.join(data_root, f"images_largescale/preembedded_imagenet/{pretrained_model}"), split="val"
+            data_dir=os.path.join(data_root, id_preembedded_dir), split="val"
         )
         test_ds = _load_dataset(
-            data_dir=os.path.join(data_root, f"images_largescale/preembedded_imagenet/{pretrained_model}"), split="test"
+            data_dir=os.path.join(data_root, id_preembedded_dir), split="test"
         )
         if test_ds is None:
             assert val_ds is not None
