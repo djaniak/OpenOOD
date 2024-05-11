@@ -1,3 +1,4 @@
+import logging
 import os
 from pathlib import Path
 
@@ -18,6 +19,9 @@ from openood.datasets.imglist_dataset import ImglistDataset
 from openood.preprocessors import BasePreprocessor
 
 from .preprocessor import get_default_preprocessor, ImageNetCPreProcessor
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 DATA_INFO = {
     'cifar10': {
@@ -476,25 +480,14 @@ def get_id_ood_dataloader(id_name, data_root, preprocessor, id_preembedded_dir=N
     # id
     sub_dataloader_dict = {}
     if id_name == "imagenet" and id_preembedded_dir:
-        train_ds = _load_dataset(
-            data_dir=os.path.join(data_root, id_preembedded_dir), split="train"
-        )
-        val_ds = _load_dataset(
-            data_dir=os.path.join(data_root, id_preembedded_dir), split="val"
-        )
-        test_ds = _load_dataset(
-            data_dir=os.path.join(data_root, id_preembedded_dir), split="test"
-        )
+        data_dir = os.path.join(data_root, id_preembedded_dir)
+        logger.info(f"Loading preembedded dataset from {data_dir}")
+        train_ds = _load_dataset(data_dir=data_dir, split="train")
+        val_ds = _load_dataset(data_dir=data_dir, split="val")
+        test_ds = _load_dataset(data_dir=data_dir, split="test")
         if test_ds is None:
             assert val_ds is not None
             test_ds = val_ds
-            val_ds = None
-        if val_ds is None:
-            assert train_ds is not None
-            _, train_labels = train_ds.tensors
-            train_ds, val_ds = _split_dataset(
-                train_ds, 0.2, stratify=train_labels
-            )
         assert train_ds is not None
         assert val_ds is not None
         assert test_ds is not None
