@@ -480,7 +480,8 @@ def get_id_ood_dataloader(id_name, data_root, preprocessor, id_preembedded_dir=N
     # id
     sub_dataloader_dict = {}
     if id_name == "imagenet" and id_preembedded_dir:
-        data_dir = os.path.join(data_root, id_preembedded_dir)
+        # data_dir = os.path.join(data_root, id_preembedded_dir)
+        data_dir = id_preembedded_dir
         logger.info(f"Loading preembedded dataset from {data_dir}")
         train_ds = _load_dataset(data_dir=data_dir, split="train")
         val_ds = _load_dataset(data_dir=data_dir, split="val")
