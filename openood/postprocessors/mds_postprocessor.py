@@ -17,7 +17,7 @@ class MDSPostprocessor(BasePostprocessor):
         self.num_classes = num_classes_dict[self.config.dataset.name]
         self.setup_flag = False
 
-    def setup(self, net: nn.Module, id_loader_dict, ood_loader_dict):
+    def setup(self, net: nn.Module, id_loader_dict, ood_loader_dict, preembedded=False, *args, **kwargs):
         if not self.setup_flag:
             # estimate mean and variance from training set
             print("\n Estimating mean and variance from training set...")
@@ -29,7 +29,7 @@ class MDSPostprocessor(BasePostprocessor):
                     id_loader_dict["train"], desc="Setup: ", position=0, leave=True
                 ):
                     data, labels = batch["data"].cuda(), batch["label"]
-                    logits, features = net(data, return_feature=True)
+                    logits, features = net(data, return_feature=True, preembedded=preembedded)
                     all_feats.append(features.cpu())
                     all_labels.append(deepcopy(labels))
                     all_preds.append(logits.argmax(1).cpu())
@@ -62,8 +62,8 @@ class MDSPostprocessor(BasePostprocessor):
             pass
 
     @torch.no_grad()
-    def postprocess(self, net: nn.Module, data: Any):
-        logits, features = net(data, return_feature=True)
+    def postprocess(self, net: nn.Module, data: Any, preembedded: bool):
+        logits, features = net(data, return_feature=True, preembedded=preembedded)
         pred = logits.argmax(1)
 
         class_scores = torch.zeros((logits.shape[0], self.num_classes))

@@ -74,6 +74,7 @@ class Evaluator:
                 If the passed postprocessor does not inherit BasePostprocessor.
         """
         self.id_preembedded_dir = id_preembedded_dir
+        self.preembedded = id_preembedded_dir is not None
 
         # check the arguments
         if postprocessor_name is None and postprocessor is None:
@@ -120,7 +121,7 @@ class Evaluator:
             net = ScaleNet(net)
 
         # postprocessor setup
-        postprocessor.setup(net, dataloader_dict['id'], dataloader_dict['ood'])
+        postprocessor.setup(net, dataloader_dict['id'], dataloader_dict['ood'], preembedded=self.preembedded)
 
         self.id_name = id_name
         self.net = net
@@ -180,7 +181,7 @@ class Evaluator:
                     _, _, data = batch["data"]
                 else:
                     data = batch["data"]
-                logits = self.net(data.cuda())
+                logits = self.net(data.cuda(), return_feature=False, preembedded=self.preembedded)
                 preds = logits.argmax(1)
                 all_preds.append(preds.cpu())
                 all_labels.append(batch['label'])
@@ -259,7 +260,9 @@ class Evaluator:
                 print(f'Performing inference on {self.id_name} test set...',
                       flush=True)
                 id_pred, id_conf, id_gt = self.postprocessor.inference(
-                    self.net, self.dataloader_dict['id']['test'], progress)
+                    self.net, self.dataloader_dict['id']['test'],
+                    preembedded=self.preembedded, progress=progress
+                    )
                 self.scores['id']['test'] = [id_pred, id_conf, id_gt]
             else:
                 id_pred, id_conf, id_gt = self.scores['id']['test']
@@ -276,7 +279,8 @@ class Evaluator:
                             self.postprocessor.inference(
                                 self.net,
                                 self.dataloader_dict['csid'][dataset_name],
-                                progress)
+                                preembedded=False, progress=progress
+                                )
                         self.scores['csid'][dataset_name] = [
                             temp_pred, temp_conf, temp_gt
                         ]
@@ -340,7 +344,7 @@ class Evaluator:
                 print(f'Performing inference on {dataset_name} dataset...',
                       flush=True)
                 ood_pred, ood_conf, ood_gt = self.postprocessor.inference(
-                    self.net, ood_dl, progress)
+                    self.net, ood_dl, preembedded=False, progress=progress)
                 self.scores['ood'][ood_split][dataset_name] = [
                     ood_pred, ood_conf, ood_gt
                 ]
@@ -403,9 +407,9 @@ class Evaluator:
             self.postprocessor.set_hyperparam(hyperparam)
 
             id_pred, id_conf, id_gt = self.postprocessor.inference(
-                self.net, self.dataloader_dict['id']['val'])
+                self.net, self.dataloader_dict['id']['val'], preembedded=self.preembedded)
             ood_pred, ood_conf, ood_gt = self.postprocessor.inference(
-                self.net, self.dataloader_dict['ood']['val'])
+                self.net, self.dataloader_dict['ood']['val'], preembedded=False)
 
             ood_gt = -1 * np.ones_like(ood_gt)  # hard set to -1 as ood
             pred = np.concatenate([id_pred, ood_pred])

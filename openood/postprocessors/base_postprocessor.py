@@ -12,17 +12,17 @@ class BasePostprocessor:
     def __init__(self, config):
         self.config = config
 
-    def setup(self, net: nn.Module, id_loader_dict, ood_loader_dict):
+    def setup(self, net: nn.Module, id_loader_dict, ood_loader_dict, *args, **kwargs):
         pass
 
     @torch.no_grad()
-    def postprocess(self, net: nn.Module, data: Any):
-        output = net(data)
+    def postprocess(self, net: nn.Module, data: Any, preembedded: bool):
+        output = net(data, preembedded=preembedded)
         score = torch.softmax(output, dim=1)
         conf, pred = torch.max(score, dim=1)
         return pred, conf
 
-    def inference(self, net: nn.Module, data_loader: DataLoader, progress: bool = True):
+    def inference(self, net: nn.Module, data_loader: DataLoader, preembedded: bool, progress: bool = True):
         pred_list, conf_list, label_list = [], [], []
         for batch in tqdm(
             data_loader, disable=not progress or not comm.is_main_process()
@@ -33,7 +33,7 @@ class BasePostprocessor:
             else:
                 data = batch["data"].cuda()
             label = batch["label"].cuda()
-            pred, conf = self.postprocess(net, data)
+            pred, conf = self.postprocess(net, data, preembedded)
 
             pred_list.append(pred.cpu())
             conf_list.append(conf.cpu())
