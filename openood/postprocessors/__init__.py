@@ -22,6 +22,7 @@ from .mcm_postprocessor import MCMPostprocessor
 from .mds_ensemble_postprocessor import MDSEnsemblePostprocessor
 from .mds_postprocessor import MDSPostprocessor
 from .mos_postprocessor import MOSPostprocessor
+from .multimds_postprocessor import MultiMDSPostprocessor
 from .nnguide_postprocessor import NNGuidePostprocessor
 from .npos_postprocessor import NPOSPostprocessor
 from .odin_postprocessor import ODINPostprocessor
