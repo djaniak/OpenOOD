@@ -44,22 +44,22 @@ from openood.postprocessors import (
     SigmaStdPostprocessor,
     TemperatureScalingPostprocessor,
     VIMPostprocessor,
-)
-from openood.postprocessors.bhdsim_postprocessor import BhattacharyyaDistSimPostprocessor
-from openood.postprocessors.bhdsimk_postprocessor import BhattacharyyaDistSimKPostprocessor
-from openood.postprocessors.edsim_postprocessor import EuclideanDistSimPostprocessor
-from openood.postprocessors.edsimk_postprocessor import EuclideanDistSimKPostprocessor
-from openood.postprocessors.kldivprior_postprocessor import PriorKlDivPostprocessor
-from openood.postprocessors.kldivsim_postprocessor import KlDivSimPostprocessor
-from openood.postprocessors.kldivsimk_postprocessor import KlDivSimKPostprocessor
-from openood.postprocessors.logpmodel_postprocessor import ModelLogProbPostprocessor
-from openood.postprocessors.logpprior_postprocessor import PriorLogProbPostprocessor
-from openood.postprocessors.pmds_postprocessor import ProjectedMDSPostprocessor
-from openood.postprocessors.pumds_postprocessor import (
+    BhattacharyyaDistSimPostprocessor,
+    BhattacharyyaDistSimKPostprocessor,
+    EuclideanDistSimPostprocessor,
+    EuclideanDistSimKPostprocessor,
+    PriorKlDivPostprocessor,
+    KlDivSimPostprocessor,
+    KlDivSimKPostprocessor,
+    ModelLogProbPostprocessor,
+    PriorLogProbPostprocessor,
+    ProjectedMDSPostprocessor,
     ProjectedUnsupervisedMDSPostprocessor,
+    RKlDivSimPostprocessor,
+    UnsupervisedMDSPostprocessor,
+    MultiMDSPostprocessor
 )
-from openood.postprocessors.rkldivsim_postprocessor import RKlDivSimPostprocessor
-from openood.postprocessors.umds_postprocessor import UnsupervisedMDSPostprocessor
+
 from openood.utils.config import Config, merge_configs
 
 postprocessors = {
@@ -118,6 +118,7 @@ postprocessors = {
     "edsimk": EuclideanDistSimKPostprocessor,
     "bhdsim": BhattacharyyaDistSimPostprocessor,
     "bhdsimk": BhattacharyyaDistSimKPostprocessor,
+    "multimds": MultiMDSPostprocessor,
 }
 
 link_prefix = (

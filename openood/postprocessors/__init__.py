@@ -43,3 +43,17 @@ from .sigmastd_postprocessor import SigmaStdPostprocessor
 from .temp_scaling_postprocessor import TemperatureScalingPostprocessor
 from .utils import get_postprocessor
 from .vim_postprocessor import VIMPostprocessor
+
+from .bhdsim_postprocessor import BhattacharyyaDistSimPostprocessor
+from .bhdsimk_postprocessor import BhattacharyyaDistSimKPostprocessor
+from .edsim_postprocessor import EuclideanDistSimPostprocessor
+from .edsimk_postprocessor import EuclideanDistSimKPostprocessor
+from .kldivsim_postprocessor import KlDivSimPostprocessor
+from .kldivsimk_postprocessor import KlDivSimKPostprocessor
+from .kldivprior_postprocessor import PriorKlDivPostprocessor
+from .logpmodel_postprocessor import ModelLogProbPostprocessor
+from .logpprior_postprocessor import PriorLogProbPostprocessor
+from .pmds_postprocessor import ProjectedMDSPostprocessor
+from .pumds_postprocessor import ProjectedUnsupervisedMDSPostprocessor
+from .rkldivsim_postprocessor import RKlDivSimPostprocessor
+from .umds_postprocessor import UnsupervisedMDSPostprocessor
