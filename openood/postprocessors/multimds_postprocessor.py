@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from sklearn.covariance import EmpiricalCovariance
+from tqdm import tqdm
 
 from .base_postprocessor import BasePostprocessor
 from .info import num_classes_dict
@@ -20,15 +21,15 @@ class MultiMDSPostprocessor(BasePostprocessor):
         if self.setup_flag:
             return
         print("\n Estimating mean and variance from training set...")
-        for layer_idx in self.layers:
-            all_feats, all_labels, all_preds = self._collect_features_and_labels(net, id_loader_dict, preembedded)
-            self._compute_class_statistics(all_feats[:,layer_idx,:], all_labels[:,layer_idx,:])
+        all_feats, all_labels, all_preds = self._collect_features_and_labels(net, id_loader_dict, preembedded)
+        for layer_idx in tqdm(self.layers, desc="Computing class statistics for each layer"):
+            self._compute_class_statistics(all_feats[:,layer_idx,:], all_labels)
         self.setup_flag = True
 
     def _collect_features_and_labels(self, net, id_loader_dict, preembedded):
         all_feats, all_labels, all_preds = [], [], []
         with torch.no_grad():
-            for batch in id_loader_dict["train"]:
+            for batch in tqdm(id_loader_dict["train"], desc="Collecting features and labels"):
                 data, labels = batch["data"].cuda(), batch["label"]
                 logits, features = net(data, return_feature=True, preembedded=preembedded)
                 all_feats.append(features.cpu())
