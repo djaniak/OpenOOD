@@ -10,10 +10,15 @@ from .info import num_classes_dict
 
 class MultiMDSPostprocessor(BasePostprocessor):
     def __init__(self, config):
+        print(config)
         self.setup_flag = False
         self.config = config
         self.num_classes = num_classes_dict[self.config.dataset.name]
-        self.layers = self.config.layers
+        if "vitb" in self.config.model.name:
+            self.num_layers = 12
+        else:
+            raise ValueError(f"Unsupported model: {self.config.model.name}")
+        self.layers = list(range(self.num_layers-self.config.postprocessor.n_last_layers, self.num_layers))
         self.class_mean = []
         self.precision = []
 
