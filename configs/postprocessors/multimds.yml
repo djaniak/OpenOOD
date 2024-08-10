@@ -1,4 +1,4 @@
 postprocessor:
-  name: mds
+  name: multimds
   APS_mode: False
   n_last_layers: 2
