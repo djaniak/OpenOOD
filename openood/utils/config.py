@@ -92,7 +92,7 @@ class Config(dict):
             if arg == ' ':
                 continue  # hard code remove white space in config file list
             if isinstance(arg, str):
-                if arg.endswith('.yml'):
+                if arg.endswith('.yml') or arg.endswith('.yaml'):
                     with open(arg, 'r') as f:
                         raw_dict = yaml.safe_load(f)
                 else:

@@ -2,5 +2,3 @@ postprocessor:
   name: multimds
   APS_mode: False
   n_last_layers: 2
-model:
-  name: null

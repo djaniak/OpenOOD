@@ -128,9 +128,11 @@ link_prefix = (
 
 def get_postprocessor(config_root: str, postprocessor_name: str, id_data_name: str):
     postprocessor_config_path = os.path.join(
-        config_root, "postprocessors", f"{postprocessor_name}.yml"
+        config_root, "postprocessors", f"{postprocessor_name}.yaml"
     )
+    print(postprocessor_config_path)
     if not os.path.exists(postprocessor_config_path):
+        print("HERE")
         os.makedirs(os.path.dirname(postprocessor_config_path), exist_ok=True)
         urllib.request.urlretrieve(
             link_prefix + f"{postprocessor_name}.yml", postprocessor_config_path
