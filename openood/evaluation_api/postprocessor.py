@@ -58,7 +58,8 @@ from openood.postprocessors import (
     RKlDivSimPostprocessor,
     UnsupervisedMDSPostprocessor,
     MultiMDSPostprocessor,
-    PCAPostprocessor
+    PCAPostprocessor,
+    RegularizedPCAPostprocessor
 )
 
 from openood.utils.config import Config, merge_configs
@@ -121,6 +122,7 @@ postprocessors = {
     "bhdsimk": BhattacharyyaDistSimKPostprocessor,
     "multimds": MultiMDSPostprocessor,
     "pca": PCAPostprocessor,
+    "rpca": RegularizedPCAPostprocessor,
 }
 
 link_prefix = (

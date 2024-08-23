@@ -54,6 +54,7 @@ from .kldivprior_postprocessor import PriorKlDivPostprocessor
 from .logpmodel_postprocessor import ModelLogProbPostprocessor
 from .logpprior_postprocessor import PriorLogProbPostprocessor
 from .pca_postprocessor import PCAPostprocessor
+from .rpca_postprocessor import RegularizedPCAPostprocessor
 from .pmds_postprocessor import ProjectedMDSPostprocessor
 from .pumds_postprocessor import ProjectedUnsupervisedMDSPostprocessor
 from .rkldivsim_postprocessor import RKlDivSimPostprocessor

@@ -11,7 +11,11 @@ from .base_postprocessor import BasePostprocessor
 from .info import num_classes_dict
 
 
-class PCAPostprocessor(BasePostprocessor):
+class RegularizedPCAPostprocessor(BasePostprocessor):
+    """
+    See paper: Revisit PCA-based technique for Out-of-Distribution Detection
+    https://openaccess.thecvf.com/content/ICCV2023/papers/Guan_Revisit_PCA-based_Technique_for_Out-of-Distribution_Detection_ICCV_2023_paper.pdf
+    """
     def __init__(self, config):
         self.config = config
         self.postprocessor_args = config.postprocessor.postprocessor_args
@@ -64,6 +68,8 @@ class PCAPostprocessor(BasePostprocessor):
         reconstructed = self.pca.inverse_transform(projected)
         # calculate the reconstruction error (L2 norm)
         error = np.linalg.norm(features - reconstructed, axis=1)
-        conf = torch.tensor(error)
+        # regularized reconstruction error
+        regularized_error = error / np.linalg.norm(features, axis=1)
+        conf = torch.tensor(regularized_error)
 
         return pred, conf
