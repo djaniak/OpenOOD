@@ -1,0 +1,7 @@
+postprocessor:
+  name: pca
+  APS_mode: False
+  postprocessor_args:
+    n_component: 512
+  postprocessor_sweep:
+    n_component_list: [128, 256, 512, 768]

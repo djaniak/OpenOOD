@@ -57,7 +57,8 @@ from openood.postprocessors import (
     ProjectedUnsupervisedMDSPostprocessor,
     RKlDivSimPostprocessor,
     UnsupervisedMDSPostprocessor,
-    MultiMDSPostprocessor
+    MultiMDSPostprocessor,
+    PCAPostprocessor
 )
 
 from openood.utils.config import Config, merge_configs
@@ -119,6 +120,7 @@ postprocessors = {
     "bhdsim": BhattacharyyaDistSimPostprocessor,
     "bhdsimk": BhattacharyyaDistSimKPostprocessor,
     "multimds": MultiMDSPostprocessor,
+    "pca": PCAPostprocessor,
 }
 
 link_prefix = (
@@ -132,7 +134,6 @@ def get_postprocessor(config_root: str, postprocessor_name: str, id_data_name: s
     )
     print(postprocessor_config_path)
     if not os.path.exists(postprocessor_config_path):
-        print("HERE")
         os.makedirs(os.path.dirname(postprocessor_config_path), exist_ok=True)
         urllib.request.urlretrieve(
             link_prefix + f"{postprocessor_name}.yml", postprocessor_config_path
