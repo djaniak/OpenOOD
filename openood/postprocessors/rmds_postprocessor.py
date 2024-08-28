@@ -77,15 +77,15 @@ class RMDSPostprocessor(BasePostprocessor):
         logits, features = net(data, return_feature=True, preembedded=preembedded)
         pred = logits.argmax(1)
 
-        tensor1 = features.cpu() - self.whole_mean.view(1, -1)
+        tensor1 = features - self.whole_mean.view(1, -1).cuda()
         background_scores = -torch.matmul(
-            torch.matmul(tensor1, self.whole_precision), tensor1.t()).diag()
+            torch.matmul(tensor1, self.whole_precision.cuda()), tensor1.t()).diag().cpu()
 
         class_scores = torch.zeros((logits.shape[0], self.num_classes))
         for c in range(self.num_classes):
-            tensor = features.cpu() - self.class_mean[c].view(1, -1)
+            tensor = features - self.class_mean[c].view(1, -1).cuda()
             class_scores[:, c] = -torch.matmul(
-                torch.matmul(tensor, self.precision), tensor.t()).diag()
+                torch.matmul(tensor, self.precision.cuda()), tensor.t()).diag().cpu()
             class_scores[:, c] = class_scores[:, c] - background_scores
 
         conf = torch.max(class_scores, dim=1)[0]

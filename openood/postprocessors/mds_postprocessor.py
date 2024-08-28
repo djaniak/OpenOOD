@@ -68,10 +68,10 @@ class MDSPostprocessor(BasePostprocessor):
 
         class_scores = torch.zeros((logits.shape[0], self.num_classes))
         for c in range(self.num_classes):
-            tensor = features.cpu() - self.class_mean[c].view(1, -1)
+            tensor = features - self.class_mean[c].view(1, -1).cuda()
             class_scores[:, c] = -torch.matmul(
-                torch.matmul(tensor, self.precision), tensor.t()
-            ).diag()
+                torch.matmul(tensor, self.precision.cuda()), tensor.t()
+            ).diag().cpu()
 
         conf = torch.max(class_scores, dim=1)[0]
         return pred, conf
