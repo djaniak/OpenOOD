@@ -11,7 +11,7 @@ from .base_postprocessor import BasePostprocessor
 from .info import num_classes_dict
 
 
-class MDSPostprocessor(BasePostprocessor):
+class MDSPlusPostprocessor(BasePostprocessor):
     def __init__(self, config):
         self.config = config
         self.num_classes = num_classes_dict[self.config.dataset.name]
