@@ -59,3 +59,4 @@ from .pmds_postprocessor import ProjectedMDSPostprocessor
 from .pumds_postprocessor import ProjectedUnsupervisedMDSPostprocessor
 from .rkldivsim_postprocessor import RKlDivSimPostprocessor
 from .umds_postprocessor import UnsupervisedMDSPostprocessor
+from .mds_plus_postprocessor import MDSPlusPostprocessor

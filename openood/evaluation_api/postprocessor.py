@@ -59,7 +59,8 @@ from openood.postprocessors import (
     UnsupervisedMDSPostprocessor,
     MultiMDSPostprocessor,
     PCAPostprocessor,
-    RegularizedPCAPostprocessor
+    RegularizedPCAPostprocessor,
+    MDSPlusPostprocessor
 )
 
 from openood.utils.config import Config, merge_configs
@@ -123,6 +124,7 @@ postprocessors = {
     "multimds": MultiMDSPostprocessor,
     "pca": PCAPostprocessor,
     "rpca": RegularizedPCAPostprocessor,
+    "mds_plus": MDSPlusPostprocessor
 }
 
 link_prefix = (
