@@ -44,8 +44,8 @@ class KNNPostprocessor(BasePostprocessor):
             pass
 
     @torch.no_grad()
-    def postprocess(self, net: nn.Module, data: Any):
-        output, feature = net(data, return_feature=True)
+    def postprocess(self, net: nn.Module, data: Any, preembedded: bool):
+        output, feature = net(data, return_feature=True, preembedded=preembedded)
         feature_normed = normalizer(feature.data.cpu().numpy())
         D, _ = self.index.search(
             feature_normed,

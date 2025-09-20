@@ -14,7 +14,7 @@ class MaxLogitPostprocessor(BasePostprocessor):
         self.args = self.config.postprocessor.postprocessor_args
 
     @torch.no_grad()
-    def postprocess(self, net: nn.Module, data: Any):
-        output = net(data)
+    def postprocess(self, net: nn.Module, data: Any, preembedded: bool):
+        output = net(data, return_feature=False, preembedded=preembedded)
         conf, pred = torch.max(output, dim=1)
         return pred, conf

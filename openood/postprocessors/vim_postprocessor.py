@@ -57,8 +57,8 @@ class VIMPostprocessor(BasePostprocessor):
             pass
 
     @torch.no_grad()
-    def postprocess(self, net: nn.Module, data: Any):
-        _, feature_ood = net.forward(data, return_feature=True)
+    def postprocess(self, net: nn.Module, data: Any, preembedded: bool):
+        _, feature_ood = net(data, return_feature=True, preembedded=preembedded)
         feature_ood = feature_ood.cpu()
         logit_ood = feature_ood @ self.w.T + self.b
         _, pred = torch.max(logit_ood, dim=1)
