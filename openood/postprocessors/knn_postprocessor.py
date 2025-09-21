@@ -20,7 +20,7 @@ class KNNPostprocessor(BasePostprocessor):
         self.args_dict = self.config.postprocessor.postprocessor_sweep
         self.setup_flag = False
 
-    def setup(self, net: nn.Module, id_loader_dict, ood_loader_dict):
+    def setup(self, net: nn.Module, id_loader_dict, ood_loader_dict, preembedded=False, *args, **kwargs):
         if not self.setup_flag:
             activation_log = []
             net.eval()
@@ -32,7 +32,7 @@ class KNNPostprocessor(BasePostprocessor):
                     data = batch['data'].cuda()
                     data = data.float()
 
-                    _, feature = net(data, return_feature=True)
+                    _, feature = net(data, return_feature=True, preembedded=preembedded)
                     activation_log.append(
                         normalizer(feature.data.cpu().numpy()))
 

@@ -19,7 +19,7 @@ class VIMPostprocessor(BasePostprocessor):
         self.dim = self.args.dim
         self.setup_flag = False
 
-    def setup(self, net: nn.Module, id_loader_dict, ood_loader_dict):
+    def setup(self, net: nn.Module, id_loader_dict, ood_loader_dict, preembedded=False, *args, **kwargs):
         if not self.setup_flag:
             net.eval()
 
@@ -33,7 +33,7 @@ class VIMPostprocessor(BasePostprocessor):
                                   leave=True):
                     data = batch['data'].cuda()
                     data = data.float()
-                    _, feature = net(data, return_feature=True)
+                    _, feature = net(data, return_feature=True, preembedded=preembedded)
                     feature_id_train.append(feature.cpu().numpy())
                 feature_id_train = np.concatenate(feature_id_train, axis=0)
                 logit_id_train = feature_id_train @ self.w.T + self.b
