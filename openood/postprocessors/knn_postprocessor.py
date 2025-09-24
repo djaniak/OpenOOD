@@ -25,7 +25,7 @@ class KNNPostprocessor(BasePostprocessor):
         self.args_dict = self.config.postprocessor.postprocessor_sweep
         self.setup_flag = False
 
-    def setup(self, net: nn.Module, id_loader_dict: dict, preembedded: bool = False):
+    def setup(self, net: nn.Module, id_loader_dict, ood_loader_dict, preembedded=False, *args, **kwargs):
         if not self.setup_flag:
             activation_log = []
             net.eval()
