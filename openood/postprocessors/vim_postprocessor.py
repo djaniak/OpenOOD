@@ -25,6 +25,11 @@ class VIMPostprocessor(BasePostprocessor):
 
             with torch.no_grad():
                 self.w, self.b = net.get_fc()
+                # Convert to tensor if needed
+                if isinstance(self.w, np.ndarray):
+                    self.w = torch.from_numpy(self.w)
+                if isinstance(self.b, np.ndarray):
+                    self.b = torch.from_numpy(self.b)
                 self.w = self.w.cuda()
                 self.b = self.b.cuda()
                 print('Extracting id training feature')
