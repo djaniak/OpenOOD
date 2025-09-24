@@ -25,32 +25,31 @@ class VIMPostprocessor(BasePostprocessor):
 
             with torch.no_grad():
                 self.w, self.b = net.get_fc()
+                self.w = self.w.cuda()
+                self.b = self.b.cuda()
                 print('Extracting id training feature')
                 feature_id_train = []
                 for batch in tqdm(id_loader_dict['train'],
-                                  desc='Setup: ',
-                                  position=0,
-                                  leave=True):
+                                desc='Setup: ',
+                                position=0,
+                                leave=True):
                     data = batch['data'].cuda()
                     data = data.float()
                     _, feature = net(data, return_feature=True, preembedded=preembedded)
-                    feature_id_train.append(feature.cpu().numpy())
-                feature_id_train = np.concatenate(feature_id_train, axis=0)
+                    feature_id_train.append(feature)
+                feature_id_train = torch.cat(feature_id_train, dim=0)  # stays on GPU
                 logit_id_train = feature_id_train @ self.w.T + self.b
 
-            self.u = -np.matmul(pinv(self.w), self.b)
-            ec = EmpiricalCovariance(assume_centered=True)
-            ec.fit(feature_id_train - self.u)
-            eig_vals, eigen_vectors = np.linalg.eig(ec.covariance_)
-            self.NS = np.ascontiguousarray(
-                (eigen_vectors.T[np.argsort(eig_vals * -1)[self.dim:]]).T)
+            self.u = -torch.linalg.pinv(self.w) @ self.b
+            centered = feature_id_train - self.u
+            cov = torch.cov(centered.T)
+            eig_vals, eigen_vectors = torch.linalg.eigh(cov)
+            idx = torch.argsort(eig_vals * -1)[self.dim:]
+            self.NS = eigen_vectors[:, idx].contiguous()
 
-            vlogit_id_train = norm(np.matmul(feature_id_train - self.u,
-                                             self.NS),
-                                   axis=-1)
-            self.alpha = logit_id_train.max(
-                axis=-1).mean() / vlogit_id_train.mean()
-            print(f'{self.alpha=:.4f}')
+            vlogit_id_train = torch.norm((centered @ self.NS), dim=-1)
+            self.alpha = logit_id_train.max(dim=-1).values.mean() / vlogit_id_train.mean()
+            print(f'{self.alpha:.4f}')
 
             self.setup_flag = True
         else:
@@ -59,14 +58,16 @@ class VIMPostprocessor(BasePostprocessor):
     @torch.no_grad()
     def postprocess(self, net: nn.Module, data: Any, preembedded: bool):
         _, feature_ood = net(data, return_feature=True, preembedded=preembedded)
-        feature_ood = feature_ood.cpu()
+        # Ensure everything is on the same device as self.w
+        device = self.w.device
+        feature_ood = feature_ood.to(device)
         logit_ood = feature_ood @ self.w.T + self.b
         _, pred = torch.max(logit_ood, dim=1)
-        energy_ood = logsumexp(logit_ood.numpy(), axis=-1)
-        vlogit_ood = norm(np.matmul(feature_ood.numpy() - self.u, self.NS),
-                          axis=-1) * self.alpha
+        # Use PyTorch for logsumexp and norm
+        energy_ood = torch.logsumexp(logit_ood, dim=-1)
+        vlogit_ood = torch.norm((feature_ood - self.u) @ self.NS, dim=-1) * self.alpha
         score_ood = -vlogit_ood + energy_ood
-        return pred, torch.from_numpy(score_ood)
+        return pred, score_ood
 
     def set_hyperparam(self, hyperparam: list):
         self.dim = hyperparam[0]
