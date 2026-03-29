@@ -36,9 +36,12 @@ class ReactPostprocessor(BasePostprocessor):
                     data = batch['data'].cuda()
                     data = data.float()
 
-                    _, feature = net(
-                        data, return_feature=True, preembedded=preembedded
-                    )
+                    try:
+                        _, feature = net(
+                            data, return_feature=True, preembedded=preembedded
+                        )
+                    except TypeError:
+                        _, feature = net(data, return_feature=True)
                     activation_log.append(feature.data.cpu().numpy())
 
             self.activation_log = np.concatenate(activation_log, axis=0)
@@ -51,9 +54,12 @@ class ReactPostprocessor(BasePostprocessor):
 
     @torch.no_grad()
     def postprocess(self, net: nn.Module, data: Any, preembedded: bool):
-        output = net.forward_threshold(
-            data, self.threshold, preembedded=preembedded
-        )
+        try:
+            output = net.forward_threshold(
+                data, self.threshold, preembedded=preembedded
+            )
+        except TypeError:
+            output = net.forward_threshold(data, self.threshold)
         score = torch.softmax(output, dim=1)
         _, pred = torch.max(score, dim=1)
         energyconf = torch.logsumexp(output.data.cpu(), dim=1)
