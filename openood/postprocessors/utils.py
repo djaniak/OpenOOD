@@ -11,6 +11,7 @@ from .dropout_postprocessor import DropoutPostProcessor
 from .dsvdd_postprocessor import DSVDDPostprocessor
 from .ebo_postprocessor import EBOPostprocessor
 from .ensemble_postprocessor import EnsemblePostprocessor
+from .fdbd_postprocessor import FDBDPostprocessor
 from .gen_postprocessor import GENPostprocessor
 from .gmm_postprocessor import GMMPostprocessor
 from .godin_postprocessor import GodinPostprocessor
@@ -23,6 +24,7 @@ from .mcd_postprocessor import MCDPostprocessor
 from .mds_ensemble_postprocessor import MDSEnsemblePostprocessor
 from .mds_postprocessor import MDSPostprocessor
 from .mos_postprocessor import MOSPostprocessor
+from .nci_postprocessor import NCIPostprocessor
 from .npos_postprocessor import NPOSPostprocessor
 from .odin_postprocessor import ODINPostprocessor
 from .opengan_postprocessor import OpenGanPostprocessor
@@ -48,6 +50,7 @@ def get_postprocessor(config: Config):
         "conf_branch": ConfBranchPostprocessor,
         "msp": BasePostprocessor,
         "ebo": EBOPostprocessor,
+        "fdbd": FDBDPostprocessor,
         "odin": ODINPostprocessor,
         "mds": MDSPostprocessor,
         "mds_ensemble": MDSEnsemblePostprocessor,
@@ -63,6 +66,7 @@ def get_postprocessor(config: Config):
         "cutpaste": CutPastePostprocessor,
         "mls": MaxLogitPostprocessor,
         "npos": NPOSPostprocessor,
+        "nci": NCIPostprocessor,
         "residual": ResidualPostprocessor,
         "klm": KLMatchingPostprocessor,
         "temperature_scaling": TemperatureScalingPostprocessor,

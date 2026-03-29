@@ -16,7 +16,15 @@ class ReactPostprocessor(BasePostprocessor):
         self.args_dict = self.config.postprocessor.postprocessor_sweep
         self.setup_flag = False
 
-    def setup(self, net: nn.Module, id_loader_dict, ood_loader_dict):
+    def setup(
+        self,
+        net: nn.Module,
+        id_loader_dict,
+        ood_loader_dict,
+        preembedded=False,
+        *args,
+        **kwargs,
+    ):
         if not self.setup_flag:
             activation_log = []
             net.eval()
@@ -28,7 +36,9 @@ class ReactPostprocessor(BasePostprocessor):
                     data = batch['data'].cuda()
                     data = data.float()
 
-                    _, feature = net(data, return_feature=True)
+                    _, feature = net(
+                        data, return_feature=True, preembedded=preembedded
+                    )
                     activation_log.append(feature.data.cpu().numpy())
 
             self.activation_log = np.concatenate(activation_log, axis=0)
@@ -40,8 +50,10 @@ class ReactPostprocessor(BasePostprocessor):
                                        self.percentile)
 
     @torch.no_grad()
-    def postprocess(self, net: nn.Module, data: Any):
-        output = net.forward_threshold(data, self.threshold)
+    def postprocess(self, net: nn.Module, data: Any, preembedded: bool):
+        output = net.forward_threshold(
+            data, self.threshold, preembedded=preembedded
+        )
         score = torch.softmax(output, dim=1)
         _, pred = torch.max(score, dim=1)
         energyconf = torch.logsumexp(output.data.cpu(), dim=1)

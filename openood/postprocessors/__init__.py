@@ -9,6 +9,7 @@ from .dropout_postprocessor import DropoutPostProcessor
 from .dsvdd_postprocessor import DSVDDPostprocessor
 from .ebo_postprocessor import EBOPostprocessor
 from .ensemble_postprocessor import EnsemblePostprocessor
+from .fdbd_postprocessor import FDBDPostprocessor
 from .gen_postprocessor import GENPostprocessor
 from .gmm_postprocessor import GMMPostprocessor
 from .godin_postprocessor import GodinPostprocessor
@@ -24,6 +25,7 @@ from .mds_postprocessor import MDSPostprocessor
 from .mos_postprocessor import MOSPostprocessor
 from .multimds_postprocessor import MultiMDSPostprocessor
 from .nnguide_postprocessor import NNGuidePostprocessor
+from .nci_postprocessor import NCIPostprocessor
 from .npos_postprocessor import NPOSPostprocessor
 from .odin_postprocessor import ODINPostprocessor
 from .opengan_postprocessor import OpenGanPostprocessor

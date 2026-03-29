@@ -16,8 +16,10 @@ class ScalePostprocessor(BasePostprocessor):
         self.args_dict = self.config.postprocessor.postprocessor_sweep
 
     @torch.no_grad()
-    def postprocess(self, net: nn.Module, data: Any):
-        output = net.forward_threshold(data, self.percentile)
+    def postprocess(self, net: nn.Module, data: Any, preembedded: bool):
+        output = net.forward_threshold(
+            data, self.percentile, preembedded=preembedded
+        )
         _, pred = torch.max(output, dim=1)
         energyconf = torch.logsumexp(output.data.cpu(), dim=1)
         return pred, energyconf
